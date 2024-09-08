@@ -151,7 +151,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             </button>
             <button 
               onClick={handleDelete} 
-              className="flex items-center bg-gray-800 text-white p-2 rounded hover:bg-red-600"
+              className="flex items-center bg-gray-800 text-white p-2 rounded hover:bg-gray-600"
             >
               <FaTrash className="mr-2" /> Delete
             </button>
