@@ -8,6 +8,49 @@ import { FaEdit, FaTrash, FaHome } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// CommentSection Component
+function CommentSection({
+  comments,
+  newComment,
+  setNewComment,
+  handleAddComment
+}: {
+  comments: string[],
+  newComment: string,
+  setNewComment: (value: string) => void,
+  handleAddComment: () => void
+}) {
+  return (
+    <div className="mt-8 bg-white shadow-lg rounded-lg p-6">
+      <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+      <textarea
+        value={newComment}
+        onChange={(e) => setNewComment(e.target.value)}
+        rows={4}
+        className="w-full p-2 border rounded"
+        placeholder="Add a comment..."
+      />
+      <button
+        onClick={handleAddComment}
+        className="mt-2 bg-gray-800 text-white p-2 rounded hover:bg-gray-900"
+      >
+        Add Comment
+      </button>
+      <div>
+        {comments.length > 0 ? (
+          comments.map((comment, index) => (
+            <div key={index} className="p-2 border-b last:border-b-0">
+              <p className="text-gray-700">{comment}</p>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-600">No comments yet.</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [comments, setComments] = useState<string[]>([]);
@@ -23,7 +66,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       // Mocking comments
       setComments(["Great product!", "Really enjoyed this item."]);
     } else {
-      router.push('/'); 
+      router.push('/');
     }
   }, [params.id, router]);
 
@@ -66,8 +109,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         {/* Image Section */}
         <div className="w-full md:w-1/3 flex-shrink-0 p-4">
           <img 
-            src={product.imageUrl} 
-            alt={product.name} 
+            src={product.imageUrl || '/placeholder-image.jpg'} 
+            alt={product.name || 'Product Image'} 
             className="w-full h-48 md:h-72 object-cover rounded-lg shadow-md" 
           />
         </div>
@@ -82,15 +125,16 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
             {/* Item Count */}
             <div className="flex items-center space-x-4 mb-4">
-              <button 
-                onClick={() => handleItemCountChange(-1)} 
+              <button
+                onClick={() => handleItemCountChange(-1)}
                 className="bg-gray-200 p-2 rounded-md shadow-sm hover:bg-gray-300"
+                disabled={itemCount === 1}
               >
                 -
               </button>
               <span className="text-xl font-semibold">{itemCount}</span>
-              <button 
-                onClick={() => handleItemCountChange(1)} 
+              <button
+                onClick={() => handleItemCountChange(1)}
                 className="bg-gray-200 p-2 rounded-md shadow-sm hover:bg-gray-300"
               >
                 +
@@ -107,7 +151,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             </button>
             <button 
               onClick={handleDelete} 
-              className="flex items-center bg-red-500 text-white p-2 rounded hover:bg-red-600"
+              className="flex items-center bg-gray-800 text-white p-2 rounded hover:bg-red-600"
             >
               <FaTrash className="mr-2" /> Delete
             </button>
@@ -116,35 +160,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       </div>
       
       {/* Comment Section */}
-      <div className="mt-8 bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold mb-4">Comments</h2>
-        <div className="mb-4">
-          <textarea 
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            rows={4}
-            className="w-full p-2 border rounded"
-            placeholder="Add a comment..."
-          />
-          <button 
-            onClick={handleAddComment} 
-            className="mt-2 bg-gray-800 text-white p-2 rounded hover:bg-gray-400"
-          >
-            Add Comment
-          </button>
-        </div>
-        <div>
-          {comments.length > 0 ? (
-            comments.map((comment, index) => (
-              <div key={index} className="p-2 border-b last:border-b-0">
-                <p className="text-gray-700">{comment}</p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-600">No comments yet.</p>
-          )}
-        </div>
-      </div>
+      <CommentSection 
+        comments={comments} 
+        newComment={newComment} 
+        setNewComment={setNewComment} 
+        handleAddComment={handleAddComment}
+      />
       
       <ToastContainer />
     </div>
